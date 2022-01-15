@@ -4,7 +4,8 @@
 #define SCREEN_HEIGHT 216
 #define SCREEN_WIDTH 384
 #define GET_POS(x) ((abs(x)+x)/2)
-#define ZM 10
+const float CH_H = 8;
+const float CH_W = 2;
 
 sf::Color gray = sf::Color(100, 100, 100);
 
@@ -62,12 +63,11 @@ void draw_road(sf::RenderWindow* window, struct Road* road, float zm = 2) {
     int i = 0;
     float s;
 
-    struct Segment* visible = (struct Segment*)malloc(sizeof(struct Segment)); //only for initialization
-    int visible_len = get_visible_segments(road, &visible, zm);
+    //struct Segment* visible = (struct Segment*)malloc(sizeof(struct Segment)); //only for initialization
+    //int visible_len = get_visible_segments(road, &visible, zm);
 
-    for (int v = road->height;v >= 0;v--) { //draws each rectangle from furthest to closest
-        s = road->segments[v].width - (v) * (zm);
-
+    for (int v = road->height-1;v >= 0;v--) { //draws each rectangle from furthest to closest
+        s = road->segments[v].width - v*zm;
         float heightoffset = road->segment_height * (s / road->width);
         sf::RectangleShape rs(sf::Vector2f(s, heightoffset)); //makes a rectangle of width s and height relative to z position
         rs.setFillColor(gray);
@@ -89,14 +89,14 @@ void draw_road(sf::RenderWindow* window, struct Road* road, float zm = 2) {
 int main() {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "KraD");
     struct Road road;
-    road.height = 15;
+    road.height = 20;
     road.playerx = 0;
     road.playery = 0;
     road.width = 100;
-    road.starty = 200;
-    road.segment_height = 20;
+    road.starty = 160;
+    road.segment_height = 30;
     road.segments = (struct Segment*)malloc(road.height * sizeof(struct Segment));
-    gen_road(&road, ZM); //2nd param = change rate of height
+    gen_road(&road, CH_H); //2nd param = change rate of height
     while (window.isOpen())
     {
         sf::Event event;
@@ -136,13 +136,13 @@ int main() {
                 }
                 else if (event.key.code == sf::Keyboard::F) {
                     struct Segment* visible = (struct Segment*)malloc(sizeof(struct Segment)); //only for initialization
-                    int visible_len = get_visible_segments(&road, &visible, ZM);
+                    int visible_len = get_visible_segments(&road, &visible, CH_H);
                     printf("%d", visible_len);
                 }
             }
         }
         window.clear(sf::Color(0, 191, 255));
-        draw_road(&window, &road, 1.1); //3rd param = change rate of width
+        draw_road(&window, &road, CH_W); //3rd param = change rate of width
         window.display();
     }
 }
