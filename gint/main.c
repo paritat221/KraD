@@ -138,7 +138,7 @@ void draw_road(struct Road* road) {
     float s;
     for (int v = road->height - 1;v >= 0;v--) { //draws each rectangle from furthest to closest
         float yoffset = road->segments[v].y - road->segments[v].z * CH_HY + road->playery;
-        s = SEG_WIDTH - road->segments[v].z / (CH_H);
+        s = SEG_WIDTH - road->segments[v].z / CH_H;
         float heightoffset = road->segments[v].height * (s / SEG_WIDTH);
         if(yoffset < SCREEN_HEIGHT && yoffset+heightoffset < 0)
             continue;
