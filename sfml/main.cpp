@@ -5,17 +5,20 @@
 #define SCREEN_WIDTH 384
 #define GET_POS(x) ((abs(x)+x)/2)
 #define SEG_WIDTH 70
+#define CH_Z 9
 const float CH_H = 4;
 const float CH_W = 1.3;
 float CH_HY = 0.80; //0->flat
 
-sf::Color gray = sf::Color(84, 90, 112);
-sf::Color lightgray = sf::Color(183, 187, 201);
-sf::Color red = sf::Color(255, 46, 88);
+sf::Color gray = sf::Color(131, 118, 156);
+sf::Color lightgray = sf::Color(194, 195, 199);
+sf::Color red = sf::Color(255, 0, 77);
+sf::Color blue = sf::Color(41, 173, 255);
 
 struct Road {
     int height; //number of elements
     struct Segment* segments; //array of segments
+    int* grid;
     float playerx;
     float playery;
     int width;
@@ -33,7 +36,7 @@ struct Segment {
     sf::Color colour;
 };
 
-struct Segment seg(float x, float y, float z, int width, float height, sf::Color colour) {
+struct Segment seg(float x, float y, float z, int width, int height, sf::Color colour) {
     struct Segment segment = { x, y, z, width, height, colour };
     return segment;
 }
@@ -125,6 +128,38 @@ void draw_road(sf::RenderWindow* window, struct Road* road, float zm = 2) {
     }
 }
 
+
+void grid_to_segments(unsigned char* grid, int size, struct Road road) {
+    int v = 0;
+    for (int i = 0;i < size;i++) {
+        uint8_t cell = grid[i];
+        unsigned char low = cell & 0x0F;
+        unsigned char high = cell >> 4;
+        if (high == 0) {
+            printf("[%d] : x(%d) y(%d) z(%d) width(%d) height(%d) colour('gray')\n", v, 0, 190 - low * 5, i * CH_Z, SEG_WIDTH, 20);
+        }
+        else if (high == 1) {
+            printf("[%d] : x(%d) y(%d) z(%d) width(%d) height(%d) colour('gray')\n", v++, 0, 190 - low * 5, i * CH_Z, SEG_WIDTH, 20);
+            float z = i*CH_Z+CH_Z;
+            printf("%f\n", z);
+            float s = SEG_WIDTH - z / (CH_H * CH_W);
+            int w31 = 120 * (s / SEG_WIDTH);
+            int w32 = (120 - SEG_WIDTH) / 2;
+            int h31 = 50 * (s / SEG_WIDTH);
+            int w30 = SEG_WIDTH * (s / SEG_WIDTH);
+            int h30 = 20 * (s / SEG_WIDTH);
+            float y31 = road.segments[v-1].y + h30;
+            int h32 = w32 * (s / SEG_WIDTH);
+            printf("[%d] : x(%f) y(%f) z(%f) width(%d) height(%d) colour('lightgray')\n", v++, (w31 - w30) / -2, y31, z, 120, 50);
+            printf("[%d] : x(%f) y(%f) z(%f) width(%d) height(%d) colour('lightgray')\n", v++, w30, y31 - h31, z, w32, 70);
+            printf("[%d] : x(%f) y(%f) z(%f) width(%d) height(%d) colour('lightgray')\n", v++, w30, y31 - h31, z, w32, 70);
+            printf("[%d] : x(%f) y(%f) z(%f) width(%d) height(%d) colour('red')\n", v++, w30, y31 - h31 - h31, z, w32, w32);
+            printf("[%d] : x(%f) y(%f) z(%f) width(%d) height(%d) colour('red')\n", v, (w31 - w30) / -2, y31 - h31 - h31, z, w32, w32);
+        }
+        v++;
+    }
+}
+
 int main() {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "KraD");
     struct Road road;
@@ -137,6 +172,33 @@ int main() {
     road.segment_height = 30;
     road.segments = (struct Segment*)malloc(road.height * sizeof(struct Segment));
     gen_road(&road); //2nd param = change rate of height
+
+    unsigned char grid[] = {
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x02,
+        0x03,
+        0x14,
+        0x04,
+        0x03,
+        0x02,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x10,
+        0x00,
+        0x00,
+        0x00,
+        0x00
+    };
+    grid_to_segments(grid, sizeof(grid), road);
+
     sf::Clock clock;
     while (window.isOpen())
     {
@@ -187,7 +249,7 @@ int main() {
         {
             road.playery += 250 * dt;
         }
-        window.clear(sf::Color(0, 191, 255));
+        window.clear(blue);
         draw_road(&window, &road); //3rd param = change rate of width
         window.display();
     }
