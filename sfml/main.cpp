@@ -34,7 +34,7 @@ struct Segment {
 };
 
 struct Segment seg(float x, float y, float z, int width, float height, sf::Color colour) {
-    struct Segment segment = { x, y, z, width, height, colour};
+    struct Segment segment = { x, y, z, width, height, colour };
     return segment;
 }
 
@@ -50,18 +50,19 @@ void gen_road(struct Road* road) {
     road->segments[7] = seg(0, 180, 63, SEG_WIDTH, 20, gray);
     road->segments[8] = seg(0, 178, 72, SEG_WIDTH, 20, gray);
     /*pillar*/
-        float s = SEG_WIDTH - 81 / (CH_H*CH_W);
-        float w31 = 136 * (s / SEG_WIDTH);
+        float s = SEG_WIDTH - 81 / (CH_H * CH_W);
+        float w31 = 120 * (s / SEG_WIDTH);
+        float w32 = (120 - SEG_WIDTH) / 2;
         float h31 = 50 * (s / SEG_WIDTH);
         float w30 = SEG_WIDTH * (s / SEG_WIDTH);
         float h30 = 20 * (s / SEG_WIDTH);
-        float y31 = 175 + h30; 
-        float h32 = 30 * (s / SEG_WIDTH);
-        road->segments[9] = seg((w31 - w30) / -2, y31, 81, 136, 50, lightgray);
-        road->segments[10] = seg((w31 - w30) / -2, y31 - h31, 81, 33, 70, lightgray);
-        road->segments[11] = seg(w30, y31 - h31, 81, 33, 70, lightgray);
-        road->segments[12] = seg(w30, y31 - h31 - h32, 81, 33, 30, red);
-        road->segments[13] = seg((w31 - w30) / -2, y31 - h31 - h32, 81, 33, 30, red);
+        float y31 = 175 + h30;
+        float h32 = w32 * (s / SEG_WIDTH);
+        road->segments[9] = seg((w31 - w30) / -2, y31, 81, 120, 50, lightgray);
+        road->segments[10] = seg((w31 - w30) / -2, y31 - h31, 81, w32, 70, lightgray);
+        road->segments[11] = seg(w30, y31 - h31, 81, w32, 70, lightgray);
+        road->segments[12] = seg(w30, y31 - h31 - h32, 81, w32, w32, red);
+        road->segments[13] = seg((w31 - w30) / -2, y31 - h31 - h32, 81, w32, w32, red);
     /*pillar*/
     road->segments[14] = seg(0, 175, 81, SEG_WIDTH, 20, gray);
     road->segments[15] = seg(0, 175, 90, SEG_WIDTH, 20, gray);
@@ -74,17 +75,18 @@ void gen_road(struct Road* road) {
     road->segments[22] = seg(0, 190, 153, SEG_WIDTH, 20, gray);
     /*pillar*/
         s = SEG_WIDTH - 162 / (CH_H * CH_W);
-        w31 = 136 * (s / SEG_WIDTH);
+        w31 = 120 * (s / SEG_WIDTH);
+        w32 = (120 - SEG_WIDTH) / 2;
         h31 = 50 * (s / SEG_WIDTH);
         w30 = SEG_WIDTH * (s / SEG_WIDTH);
         h30 = 20 * (s / SEG_WIDTH);
         y31 = 190 + h30;
-        h32 = 30 * (s / SEG_WIDTH);
-        road->segments[23] = seg((w31 - w30) / -2, y31, 162, 136, 50, lightgray);
-        road->segments[24] = seg((w31 - w30) / -2, y31 - h31, 162, 33, 70, lightgray);
-        road->segments[25] = seg(w30, y31 - h31, 162, 33, 70, lightgray);
-        road->segments[26] = seg(w30, (y31 - h31) - h32, 162, 33, 30, red);
-        road->segments[27] = seg((w31 - w30) / -2, (y31 - h31) - h32, 162, 33, 30, red);
+        h32 = w32 * (s / SEG_WIDTH);
+        road->segments[23] = seg((w31 - w30) / -2, y31, 162, 120, 50, lightgray);
+        road->segments[24] = seg((w31 - w30) / -2, y31 - h31, 162, w32, 70, lightgray);
+        road->segments[25] = seg(w30, y31 - h31, 162, w32, 70, lightgray);
+        road->segments[26] = seg(w30, (y31 - h31) - h32, 162, w32, w32, red);
+        road->segments[27] = seg((w31 - w30) / -2, (y31 - h31) - h32, 162, w32, w32, red);
     /*pillar*/
     road->segments[28] = seg(0, 190, 162, SEG_WIDTH, 20, gray);
     road->segments[29] = seg(0, 190, 171, SEG_WIDTH, 20, gray);
@@ -169,7 +171,7 @@ int main() {
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
         {
-            road.playery -= 250 * dt; 
+            road.playery -= 250 * dt;
             CH_HY -= 5 / 4 * dt;
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
@@ -181,7 +183,7 @@ int main() {
         {
             road.playery -= 250 * dt;
         }
-        else if (sf::Keyboard::isKeyPressed(sf:: Keyboard::Down))
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
             road.playery += 250 * dt;
         }
