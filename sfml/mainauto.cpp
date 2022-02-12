@@ -1,13 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 
-#define SCREEN_HEIGHT 216
-#define SCREEN_WIDTH 384
+#define SCREEN_HEIGHT 224
+#define SCREEN_WIDTH 396
 #define GET_POS(x) ((abs(x)+x)/2)
 #define SEG_WIDTH 70
 #define CH_Z 9
 const float CH_H = 4;
-const float CH_W = 1.3;
+const float CH_W = 1.65;
 float CH_HY = 0.80; //0->flat
 
 sf::Color gray = sf::Color(131, 118, 156);
@@ -101,7 +101,7 @@ void gen_road(unsigned char* grid, int size, struct Road *road) {
 int main() {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "KraD");
     struct Road road;
-    road.height = 32;
+    road.height = 64;
     road.playerx = 0;
     road.playery = 0;
     road.width = 100;
@@ -110,7 +110,7 @@ int main() {
     road.segment_height = 30;
     road.segments = (struct Segment*)malloc(road.height * sizeof(struct Segment));
 
-    unsigned char grid[] = {0x00,0x00,0x00,0x00,0x01,0x02,0x03,0x04,0x14,0x04,0x04,0x03,0x02, 0x01,0x00,0x00,0x00,0x10,0x00,0x00,0x00,0x00};
+    unsigned char grid[] = {0x00,0x00,0x00,0x00,0x01,0x02,0x03,0x04,0x14,0x04,0x04,0x03,0x02, 0x01,0x00,0x00,0x00,0x10,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x02,0x03,0x04,0x14,0x04,0x04,0x03,0x02, 0x01,0x00,0x00,0x00,0x10,0x00,0x00,0x00,0x00 };
     gen_road(grid, sizeof(grid), &road);
 
     sf::Clock clock;
@@ -133,16 +133,14 @@ int main() {
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            float mov = 300 * dt;
             for (int i = 0;i < road.height;i++) {
-                road.segments[i].x -= mov;
+                road.segments[i].x -= 300 * dt;
             }
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            float mov = 300 * dt;
             for (int i = 0;i < road.height;i++) {
-                road.segments[i].x += mov;
+                road.segments[i].x += 300 * dt;
             }
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -164,7 +162,7 @@ int main() {
             road.playery += 250 * dt;
         }
         window.clear(blue);
-        draw_road(&window, &road); 
+        draw_road(&window, &road); //3rd param = change rate of width
         window.display();
     }
 }
