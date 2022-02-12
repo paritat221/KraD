@@ -164,7 +164,7 @@ int main() {
             road.playery += 250 * dt;
         }
         window.clear(blue);
-        draw_road(&window, &road); //3rd param = change rate of width
+        draw_road(&window, &road); 
         window.display();
     }
 }
