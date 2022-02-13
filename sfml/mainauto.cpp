@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
+#include <Main.hpp>
 
 #define SCREEN_HEIGHT 224
 #define SCREEN_WIDTH 396
@@ -15,33 +16,12 @@ sf::Color lightgray = sf::Color(194, 195, 199);
 sf::Color red = sf::Color(255, 0, 77);
 sf::Color blue = sf::Color(41, 173, 255);
 
-struct Road {
-    int height; //number of elements
-    struct Segment* segments; //array of segments
-    int* grid;
-    float playerx;
-    float playery;
-    int width;
-    int segment_height;
-    int starty;
-    int startx;
-};
-
-struct Segment {
-    float x;
-    float y;
-    float z;
-    int width;
-    int height;
-    sf::Color colour;
-};
-
 struct Segment seg(float x, float y, float z, int width, int height, sf::Color colour) {
     struct Segment segment = { x, y, z, width, height, colour };
     return segment;
 }
 
-void draw_road(sf::RenderWindow* window, struct Road* road, float zm = 2) {
+void draw_road(sf::RenderWindow* window, struct Road* road) {
     float s;
     for (int v = road->height - 1;v >= 0;v--) { //draws each rectangle from furthest to closest
         s = SEG_WIDTH - road->segments[v].z / (CH_H * CH_W);
@@ -87,7 +67,6 @@ void gen_road(unsigned char* grid, int size, struct Road *road) {
             float h30 = 20 * (s / SEG_WIDTH);
             float y31 = road->segments[v-1].y + h30;
             float h32 = w32 * (s / SEG_WIDTH);
-            printf("%f", (w31 - w30) / -2);
             road->segments[v++] = seg((w31 - w30) / -2, y31, z, 120, 50, lightgray);
             road->segments[v++] = seg((w31 - w30) / -2, y31 - h31, z, w32, 70, lightgray);
             road->segments[v++] = seg( w30, y31 - h31, z, w32, 70, lightgray);
